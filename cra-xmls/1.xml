@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><SyncRetailItemReqMsg>
+         <RetailItem>
+            <ItemType>ART</ItemType>
+            <ItemNo>50339551</ItemNo>
+            <RetailItemPriceList>
+               <RetailItemPrice>
+                  <RetailPriceType>RegularSalesUnitPrice</RetailPriceType>
+                  <CurrencyCode>SEK</CurrencyCode>
+                  <PriceInclTax>29</PriceInclTax>
+                  <PriceExclTax>25.20</PriceExclTax>
+                  <TaxIncludedOverrideCode>NotSet</TaxIncludedOverrideCode>
+                  <ValidFromDateTime>2019-04-21T00:00:00.000Z</ValidFromDateTime>
+                  <ValidToDateTime>2019-25-12T23:59:59.000Z</ValidToDateTime>
+                  <ReasonCode>Discontinued</ReasonCode>
+                  <UpdateDateTime>2019-05-13T13:05:44.000Z</UpdateDateTime>
+                  </DeleteDateTime/>
+               </RetailItemPrice>
+             </RetailItemPriceList>   
+            <ClassUnitKey>
+               <ClassType>BU</ClassType>
+               <ClassUnitCode>023</ClassUnitCode>
+               <ClassUnitType>STO</ClassUnitType>
+            </ClassUnitKey>
+         </RetailItem>

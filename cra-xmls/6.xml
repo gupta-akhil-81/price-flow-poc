@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><SyncRetailItemReqMsg>
+   
+      
+         <RetailItem>
+            <ItemType>ART</ItemType>
+            <ItemNo>76339551</ItemNo>
+            <RetailItemPriceList>
+               <RetailItemPrice>
+                  <RetailPriceType>RegularSalesUnitPrice</RetailPriceType>
+                  <CurrencyCode>DKK</CurrencyCode>
+                  <PriceInclTax>238</PriceInclTax>
+                  <PriceExclTax>230.20</PriceExclTax>
+                  <TaxIncludedOverrideCode>NotSet</TaxIncludedOverrideCode>
+                  <ValidFromDateTime>2019-04-18T00:00:00.000Z</ValidFromDateTime>
+                  <ValidToDateTime>2019-05-12T23:59:59.000Z</ValidToDateTime>
+                  <ReasonCode>Discontinued</ReasonCode>
+                  <UpdateDateTime>2019-05-13T13:05:44.000Z</UpdateDateTime>
+                  </DeleteDateTime/>
+               </RetailItemPrice>
+               <RetailItemPrice>
+                  <RetailPriceType>RegularSalesUnitPrice</RetailPriceType>
+                  <CurrencyCode>DKK</CurrencyCode>
+                  <PriceInclTax>240</PriceInclTax>
+                  <PriceExclTax>237.00</PriceExclTax>
+                  <TaxIncludedOverrideCode>NotSet</TaxIncludedOverrideCode>
+                  <ValidFromDateTime>2019-05-13T00:00:00.000Z</ValidFromDateTime>
+                  <ValidToDateTime>2019-09-01T23:59:59.000Z</ValidToDateTime>
+                  <ReasonCode>Discontinued</ReasonCode>
+                  <UpdateDateTime>2019-05-13T13:05:44.000Z</UpdateDateTime>
+                  </DeleteDateTime/>
+               </RetailItemPrice>
+            </RetailItemPriceList>
+            <ClassUnitKey>
+               <ClassType>BU</ClassType>
+               <ClassUnitCode>987</ClassUnitCode>
+               <ClassUnitType>STO</ClassUnitType>
+            </ClassUnitKey>
+         </RetailItem>
+      
+   

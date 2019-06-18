@@ -1,0 +1,66 @@
+'use strict';
+
+const express = require('express');
+var bodyParser = require('body-parser');
+
+const app = express();
+app.enable('trust proxy');
+app.use(express.json());
+app.use(express.urlencoded());
+
+// Initialize datastore client
+const {Datastore} = require('@google-cloud/datastore');
+const datastore = new Datastore({namespace: 'com.ikea.datastore'});
+
+app.post('/prices', async (req, res, next) => {
+
+    var reqURL=req.method +' ' + req.url;
+    console.log('Start: '+reqURL);
+  
+	try {
+		const pricesKey = datastore.key('prices');
+		const entity = {
+				key: pricesKey,
+				data : req.body
+		};
+	    await datastore.save(entity);
+	    console.log('Customer '+ pricesKey.id + ' created.');
+	    res
+	    .status(201)
+	    .location(req.url + '/'+pricesKey.id)
+	    .end();
+	} catch (error) {
+		next(error);
+	}
+    console.log('End : '+reqURL);
+});
+
+
+//get price by item id
+app.get('/prices', async (req, res, next) => {
+
+    var reqURL=req.method +' ' + req.url;
+    console.log('Start: '+reqURL);
+    var itemNo=req.query.itemNo;
+
+	try {
+        let query = datastore.createQuery('prices').filter('itemNo' , itemNo);
+	    const [results] = await datastore.runQuery(query);
+
+	    res
+	    .status(200)
+	    .set('Content-Type', 'application/json')
+	    .json(results)
+	    .end();
+	} catch (error) {
+		next(error);
+	}
+    console.log('End : '+reqURL);
+});
+
+const PORT = process.env.PORT || 8080;
+app.listen(process.env.PORT || 8080, () => {
+  console.log(`App listening on port ${PORT}`);
+});
+
+module.exports = app;
