@@ -2,12 +2,16 @@
 
 const express = require('express');
 var bodyParser = require('body-parser');
+require('body-parser-xml')(bodyParser);
+
 var xml2jsonparser = require('xml2json');
+
 
 const app = express();
 app.enable('trust proxy');
 app.use(express.json());
-app.use(express.urlencoded());
+//app.use(express.urlencoded());
+app.use(bodyParser.xml());
 
 // Initialize datastore client
 const {Datastore} = require('@google-cloud/datastore');
@@ -16,13 +20,41 @@ const datastore = new Datastore({namespace: 'com.ikea.datastore'});
 app.post('/prices', async (req, res, next) => {
 
     var reqURL=req.method +' ' + req.url;
-    console.log('Start: '+reqURL);
-  
+    var contentType=req.headers["content-type"];
+
+    console.log('Start: '+reqURL + ' ContentType='+ contentType);
+    
 	try {
-		const pricesKey = datastore.key('prices');
+        let priceObj={};
+        if(contentType.includes("xml")){
+            
+            priceObj= {
+                itemNo: req.body.RetailItem.ItemNo[0],
+                itemType: req.body.RetailItem.ItemType[0],
+                storeClassType: req.body.RetailItem.ClassUnitKey[0].ClassType[0],
+                storeCode: req.body.RetailItem.ClassUnitKey[0].ClassUnitCode[0],
+                type: req.body.RetailItem.ClassUnitKey[0].ClassUnitType[0],
+                currencyCode: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].CurrencyCode[0],
+                priceTaxInclusive: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].PriceInclTax[0],
+                priceTaxExclusive: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].PriceExclTax[0],
+                taxIncludedOverrideCode: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].TaxIncludedOverrideCode[0],
+                reasonCode: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].ReasonCode[0],
+                validFrom :  req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].ValidFromDateTime[0],
+                validTo:  req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].ValidToDateTime[0],
+                createdAt: req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].UpdateDateTime[0],
+                updatedAt : req.body.RetailItem.RetailItemPriceList[0].RetailItemPrice[0].UpdateDateTime[0]
+            }
+
+        }else{
+            priceObj=req.body;
+        }
+
+        console.log('priceObj=' + JSON.stringify(priceObj));
+        
+        const pricesKey = datastore.key('prices');
 		const entity = {
 				key: pricesKey,
-				data : req.body
+				data : priceObj
 		};
 	    await datastore.save(entity);
 	    console.log('Customer '+ pricesKey.id + ' created.');
@@ -30,56 +62,17 @@ app.post('/prices', async (req, res, next) => {
 	    .status(201)
 	    .location(req.url + '/'+pricesKey.id)
 	    .end();
+		
 	} catch (error) {
 		next(error);
 	}
+
+    res
+    .status(201)
+    .end();
+
     console.log('End : '+reqURL);
 });
-
-
-app.post('/prices-xml', async (req, res, next) => {
-
-	var jsonData = JSON.parse(xml2jsonparser.toJson(req.body));
-	// console.log("to json ->", JSON.stringify(jsonData));
-
-	  var priceJSON={
-		"itemNo": jsonData.RetailItem.ItemNo,
-		"itemType": jsonData.RetailItem.ItemType,
-		"storeClassType": jsonData.RetailItem.ClassUnitKey.ClassUnitType,
-		"storeCode": jsonData.RetailItem.ClassUnitKey.ClassUnitCode,
-		"type": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.RetailPriceType,
-		"currencyCode": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.CurrencyCode,
-		"priceTaxInclusive": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.PriceInclTax,
-		"priceTaxExclusive": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.PriceExclTax,
-		"taxIncludedOverrideCode": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.TaxIncludedOverrideCode,
-		"reasonCode": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.ReasonCode,
-		"validFrom": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.ValidFromDateTime,
-		"validTo": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.ValidToDateTime,
-		"createdAt": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.UpdateDateTime,
-		"updatedAt": jsonData.RetailItem.RetailItemPriceList.RetailItemPrice.UpdateDateTime
-	};
-
-	//console.log(priceJSON);
-	
-	try {
-		const pricesKey = datastore.key('prices');
-		const entity = {
-				key: pricesKey,
-				data : priceJSON
-		};
-	    await datastore.save(entity);
-	    console.log('Customer '+ pricesKey.id + ' created.');
-	    res
-	    .status(201)
-	    .location(req.url + '/'+pricesKey.id)
-	    .end();
-	} catch (error) {
-		next(error);
-	}
-    console.log('End : '+reqURL);
-	
-});
-
 
 
 //get price by item id

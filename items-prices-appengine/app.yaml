@@ -1,14 +1,6 @@
+service: prices
 runtime: nodejs10
 env: standard
-instance_class: F1
-service: prices
-handlers:
-  - url: .*
-    script: auto
-automatic_scaling:
-  min_idle_instances: automatic
-  max_idle_instances: automatic
-
-  min_pending_latency: automatic
-  max_pending_latency: automatic
-network: {}
+instance_class: B8
+manual_scaling:
+  instances: 5
